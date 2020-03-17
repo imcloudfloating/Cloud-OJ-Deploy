@@ -81,7 +81,7 @@ volumes:
 > 对于 MySQL 和 RabbitMQ，务必指定节点（ `node.hostname` ）以避免重新部署时节点改变出现数据消失的现象，可以使用 `docker node ls` 查看。
 
 ```shell
-cloud.cmd -deploy
+cloud-oj.cmd -deploy
 ```
 
 ```shell
