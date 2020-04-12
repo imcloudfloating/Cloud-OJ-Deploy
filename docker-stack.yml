@@ -23,7 +23,9 @@ services:
     networks:
       - oj-net
     ports:
-      - "5000:5000"
+      - target: 5000
+        published: 5000
+        mode: ingress
     environment:
       EUREKA_SERVER: "eureka:8761"
 
@@ -37,7 +39,9 @@ services:
     networks:
       - oj-net
     ports:
-      - "80:80"
+      - target: 80
+        published: 80
+        mode: ingress
     environment:
       EUREKA_SERVER: "eureka:8761"
       MYSQL_URL: "jdbc:mysql://mysql:3306/cloud_oj"
