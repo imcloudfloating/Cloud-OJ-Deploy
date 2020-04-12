@@ -57,7 +57,7 @@ services:
       - oj-net
     environment:
       EUREKA_SERVER: "eureka:8761"
-      GATEWAY_HOST: "192.168.1.6"
+      GATEWAY_HOST: "192.168.1.5"
 
   # 管理服务
   manager_service:
@@ -179,5 +179,5 @@ volumes:
   test_data:
     driver_opts:
       type: "nfs"
-      o: "addr=192.168.1.6,rw"          # NFS 地址
+      o: "addr=192.168.1.5,rw"          # NFS 地址
       device: ":/oj-file/test_data"     # 挂载目录

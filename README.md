@@ -75,7 +75,7 @@ volumes:
     driver_opts:
       type: "nfs"
       o: "addr=192.168.1.6,rw"          # NFS IP 地址
-      device: ":/oj-file/test_data"     # NFS 中的目录
+      device: ":/oj-file/test_data"     # NFS 目录
 ```
 
 > 对于 MySQL 和 RabbitMQ，务必指定节点（ `node.hostname` ）以避免重新部署时节点改变出现数据消失的现象，可以使用 `docker node ls` 查看。
@@ -88,17 +88,8 @@ cloud-oj.cmd -deploy
 cloud-oj.sh -deploy
 ```
 
-> 使用 `-stop` 参数可以停止并删除容器（不会删除数据卷）。
-
-查看服务状态：
-
-```shell
-cloud-oj.cmd -ps
-```
-
-```script
-cloud-oj.sh -ps
-```
+> - 使用 `-stop` 参数可以停止并删除容器（不会删除数据卷）。
+> - 如果 NFS 服务器的 IP 变更，请删除 test_data 卷后再重新部署。
 
 ### Web 页面
 
@@ -106,7 +97,7 @@ cloud-oj.sh -ps
 - 注册中心：`http://YOUR_IP_ADDRESS:8761`
 - OJ 主页：`http://YOUR_IP_ADDRESS/oj/`
 
-### Attention
+### 说明
 
-- `GATEWAY_HOST` 设置为部署机器的 IP，不可使用 `localhost` 或 `127.0.0.1`
-- 本机访问网页时，要使用本机 IP，不可使用 `localhost` 或 `127.0.0.1`，会出现跨域问题
+- `GATEWAY_HOST` 设置为部署机器的 IP，不可使用 `localhost` 或 `127.0.0.1`;
+- 在部署机器上访问网页时，要使用本机 IP，不可使用 `localhost` 或 `127.0.0.1`，会出现跨域问题.
