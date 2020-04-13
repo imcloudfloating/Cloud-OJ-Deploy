@@ -1,6 +1,6 @@
 # Cloud OJ Docker Deploy
 
-这是一个微服务架构的 OJ，基于 [Spring Cloud](https://spring.io/projects/spring-cloud/)，使用 Docker 部署。
+这是一个微服务架构的 Online Judge，基于 [Spring Cloud](https://spring.io/projects/spring-cloud/)，使用 Docker 部署。
 本系统参考了 [HUSTOJ](https://github.com/zhblue/hustoj)，功能上目前比较简陋。
 
 ![Commit Code](https://note-and-blog.oss-cn-beijing.aliyuncs.com/cloud_oj/commit_code.png)
@@ -49,7 +49,7 @@ target      | 临时存放代码和编译产生的可执行文件
 
 ## 部署与运行
 
-请先安装并配置 Docker，集群部署需要配置 Docker Swarm。
+请先安装并配置 Docker，集群部署需要 Docker Swarm。
 
 ### 单机模式
 
@@ -67,7 +67,7 @@ deploy-single.sh
 
 Docker 开启 Swarm 模式，使用 `cloud-oj.sh` 或 `cloud-oj.cmd` 脚本部署。
 
-集群模式使用 NFS 存储测试数据，搭建 NFS 并修改 `docker-stack.yml` 中的以下部分即可：
+**集群模式需要使用 NFS 存储测试数据**，搭建 NFS 并修改 `docker-stack.yml` 中的以下部分即可：
 
 ```yaml
 volumes:
@@ -78,7 +78,8 @@ volumes:
       device: ":/oj-file/test_data"     # NFS 目录
 ```
 
-> 对于 MySQL 和 RabbitMQ，务必指定节点（ `node.hostname` ）以避免重新部署时节点改变出现数据消失的现象，可以使用 `docker node ls` 查看。
+> 对于 MySQL 和 RabbitMQ，务必指定节点（ `node.hostname` ）以避免重新部署时节点发生改变出现数据消失的现象，
+> 可以使用 `docker node ls` 查看（默认设置为在管理节点部署）。副本数量（`replicas`）根据集群数量调整。
 
 ```shell
 cloud-oj.cmd -deploy
@@ -88,7 +89,7 @@ cloud-oj.cmd -deploy
 cloud-oj.sh -deploy
 ```
 
-> - 使用 `-stop` 参数可以停止并删除容器（不会删除数据卷）。
+> - 使用 `-stop` 参数可以停止并删除容器（不会删除数据卷）；
 > - 如果 NFS 服务器的 IP 变更，请删除 test_data 卷后再重新部署。
 
 ### Web 页面
@@ -99,5 +100,5 @@ cloud-oj.sh -deploy
 
 ### 说明
 
-- `GATEWAY_HOST` 设置为部署机器的 IP，不可使用 `localhost` 或 `127.0.0.1`;
-- 在部署机器上访问网页时，要使用本机 IP，不可使用 `localhost` 或 `127.0.0.1`，会出现跨域问题.
+- `GATEWAY_HOST` 设置为部署机器的 IP，不可使用 `localhost` 或 `127.0.0.1`；
+- 在部署机器上访问网页时，要使用本机 IP，不可使用 `localhost` 或 `127.0.0.1`，会出现跨域问题。

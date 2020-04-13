@@ -8,10 +8,15 @@ services:
       resources:
         limits:
           memory: 512M
+      placement:
+        constraints:
+          - node.role == manager
     networks:
       - oj-net
     ports:
-      - "8761:8761"
+      - target: 8761
+        published: 8761
+        mode: ingress
 
   # 服务监控
   monitor_service:
@@ -19,7 +24,10 @@ services:
     deploy:
       resources:
         limits:
-          memory: 256M
+          memory: 512M
+      placement:
+        constraints:
+          - node.role == manager
     networks:
       - oj-net
     ports:
@@ -35,7 +43,10 @@ services:
     deploy:
       resources:
         limits:
-          memory: 1024M
+          memory: 2048M
+      placement:
+        constraints:
+          - node.role == manager
     networks:
       - oj-net
     ports:
@@ -53,10 +64,13 @@ services:
   oj_web:
     image: registry.cn-hangzhou.aliyuncs.com/cloudli/cloud-oj-web
     deploy:
-      replicas: 1
+      replicas: 3
       resources:
         limits:
-          memory: 512M
+          memory: 1024M
+      placement:
+        constraints:
+          - node.role == worker
     networks:
       - oj-net
     environment:
@@ -67,10 +81,13 @@ services:
   manager_service:
     image: registry.cn-hangzhou.aliyuncs.com/cloudli/manager-service
     deploy:
-      replicas: 1
+      replicas: 3
       resources:
         limits:
-          memory: 1024M
+          memory: 2048M
+      placement:
+        constraints:
+          - node.role == worker
     networks:
       - oj-net
     environment:
@@ -84,10 +101,13 @@ services:
   file_server:
     image: registry.cn-hangzhou.aliyuncs.com/cloudli/file-server
     deploy:
-      replicas: 1
+      replicas: 3
       resources:
         limits:
           memory: 512M
+      placement:
+        constraints:
+          - node.role == worker
     networks:
       - oj-net
     volumes:
@@ -99,10 +119,13 @@ services:
   judge_service:
     image: registry.cn-hangzhou.aliyuncs.com/cloudli/judge-service
     deploy:
-      replicas: 1
+      replicas: 3
       resources:
         limits:
           memory: 2048M
+      placement:
+        constraints:
+          - node.role == worker
     networks:
       - oj-net
     volumes:
@@ -128,7 +151,7 @@ services:
     deploy:
       placement:
         constraints:
-          - node.role == manager    # 指定节点
+          - node.role == manager
     networks:
       - oj-net
     ports:
