@@ -64,7 +64,7 @@ services:
   oj_web:
     image: registry.cn-hangzhou.aliyuncs.com/cloudli/cloud-oj-web
     deploy:
-      replicas: 3
+      replicas: 2
       resources:
         limits:
           memory: 1024M
@@ -75,13 +75,13 @@ services:
       - oj-net
     environment:
       EUREKA_SERVER: "eureka:8761"
-      GATEWAY_HOST: "192.168.1.5"
+      GATEWAY_HOST: "192.168.1.3"
 
   # 管理服务
   manager_service:
     image: registry.cn-hangzhou.aliyuncs.com/cloudli/manager-service
     deploy:
-      replicas: 3
+      replicas: 2
       resources:
         limits:
           memory: 2048M
@@ -101,7 +101,7 @@ services:
   file_server:
     image: registry.cn-hangzhou.aliyuncs.com/cloudli/file-server
     deploy:
-      replicas: 3
+      replicas: 2
       resources:
         limits:
           memory: 512M
@@ -119,7 +119,7 @@ services:
   judge_service:
     image: registry.cn-hangzhou.aliyuncs.com/cloudli/judge-service
     deploy:
-      replicas: 3
+      replicas: 2
       resources:
         limits:
           memory: 2048M
@@ -130,7 +130,7 @@ services:
       - oj-net
     volumes:
       - "test_data:/test_data"
-      - "target:/target"           # 挂载可执行文件目录（非必须）
+      # - "target:/target"           # 挂载可执行文件目录（非必须）
     environment:
       EUREKA_SERVER: "eureka:8761"
       MYSQL_URL: "jdbc:mysql://mysql:3306/cloud_oj"
@@ -141,8 +141,8 @@ services:
       RABBIT_PORT: "5672"
       RABBIT_USER: "cloud@oj"
       RABBIT_PASSWORD: "cloud@oj"
-      CORE_POOL_SIZE: 24
-      MAX_POOL_SIZE: 24
+      CORE_POOL_SIZE: 50
+      MAX_POOL_SIZE: 1000
       QUEUE_CAPACITY: 1000
 
   # 数据库
@@ -206,5 +206,5 @@ volumes:
   test_data:
     driver_opts:
       type: "nfs"
-      o: "addr=192.168.1.5,rw"          # NFS 地址
+      o: "addr=192.168.1.3,rw"          # NFS 地址
       device: ":/oj-file/test_data"     # 挂载目录

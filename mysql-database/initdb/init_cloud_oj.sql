@@ -42,9 +42,6 @@ create table `contest-problem`
 create index problem_title_index
     on problem (title);
 
-create index problem_category_index
-    on problem (category);
-
 create table role
 (
     role_id   int         not null
@@ -70,7 +67,7 @@ create table user
 
 create table solution
 (
-    solution_id int auto_increment
+    solution_id char(36)
         primary key,
     problem_id  int                                null,
     contest_id  int                                null,
@@ -95,7 +92,7 @@ create table compile
 (
     id          int auto_increment
         primary key,
-    solution_id int  null,
+    solution_id char(36) not null,
     state       int  not null comment '编译状态(0->编译成功,-1->编译出错)',
     info        text null comment '编译信息',
     constraint compile_solution_solution_id_fk
@@ -107,7 +104,7 @@ create table runtime
 (
     id          int auto_increment
         primary key,
-    solution_id int    null,
+    solution_id char(36) not null,
     total       int    null comment '总测试点数量',
     passed      int    null comment '通过的测试点数量',
     time        bigint null comment '耗时（ms）',
@@ -122,11 +119,18 @@ create table source_code
 (
     code_id     int auto_increment
         primary key,
-    solution_id int  null,
+    solution_id char(36) not null,
     code        text not null,
     constraint source_code_solution_solution_id_fk
         foreign key (solution_id) references solution (solution_id)
             on update cascade on delete cascade
+);
+
+create table task
+(
+    task_name char(32) not null
+        primary key,
+    uuid      char(36) not null
 );
 
 create index user_name_index
