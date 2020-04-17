@@ -81,14 +81,16 @@ volumes:
 **对于 MySQL 和 RabbitMQ，务必指定节点（ `node.hostname` 或者 `node.role`）以避免重新部署时节点发生改变出现数据消失的现象，
 可以使用 `docker node ls` 查看（默认设置为在管理节点部署）**。
 
+约束部署节点：
+
 ```yaml
 deploy:
     placement:
       constraints:
-        - node.role == worker   # 或者 node.hostname == 主机名
+        - node.role == worker   # 指定部署节点
 ```
 
-> 由于 Docker Swarm 中使用 overlay 网络时容器存在多网卡，因此子网被设置为 `10.16.0.0/16`，不可更改。
+也可以使用 `node.hostname` 或者 `node.labels.role` 来更精确指定。
 
 ```shell
 cloud-oj.cmd -deploy
@@ -100,12 +102,15 @@ cloud-oj.sh -deploy
 
 > - 使用 `-stop` 参数可以停止并删除容器（不会删除数据卷）；
 > - 如果 NFS 服务器的 IP 变更，请删除 test_data 卷后再重新部署。
+> - 由于 Docker Swarm 中使用 overlay 网络时容器存在多网卡，编排文件中已经将子网设置为 `10.16.0.0/16`，请勿更改。
 
 ### Web 页面
 
 - 监控中心：`http://IP_ADDRESS:5000`
 - 注册中心：`http://IP_ADDRESS:8761`
 - OJ 主页：`http://IP_ADDRESS/oj/`
+
+系统初始管理员用户名和密码均为 `root`。
 
 ### 说明
 

@@ -1,5 +1,6 @@
 create database cloud_oj character set utf8mb4;
 use cloud_oj;
+set character set utf8;
 create table contest
 (
     contest_id   int auto_increment
@@ -130,7 +131,7 @@ create table task
 (
     task_name char(32) not null
         primary key,
-    uuid      char(36) not null
+    uuid      char(36) null
 );
 
 create index user_name_index
@@ -269,3 +270,6 @@ VALUES (3, 'ROLE_ROOT');
 set character set utf8;
 INSERT INTO cloud_oj.user (user_id, name, password, secret, role_id)
 values ('root', '初始管理员', '63a9f0ea7bb98050796b649e85481845', LEFT(UUID(), 8), 3);
+
+INSERT INTO cloud_oj.task (task_name)
+values ('send_committed')
