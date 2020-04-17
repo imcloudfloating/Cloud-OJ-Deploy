@@ -141,9 +141,9 @@ services:
       RABBIT_PORT: "5672"
       RABBIT_USER: "cloud@oj"
       RABBIT_PASSWORD: "cloud@oj"
-      CORE_POOL_SIZE: 50
-      MAX_POOL_SIZE: 1000
-      QUEUE_CAPACITY: 1000
+      CORE_POOL_SIZE: 8
+      MAX_POOL_SIZE: 16
+      QUEUE_CAPACITY: 200
 
   # 数据库
   mysql:
