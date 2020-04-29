@@ -18,7 +18,7 @@
 名称                | 说明
 --------------------|----------------------------------------------------
 EUREKA_SERVER       | 注册中心，填写注册中心的服务名
-GATEWAY_HOST        | 网关的 IP，填写网关所在的宿主机的 IP（不能写 localhost）
+GATEWAY_HOST        | 网关的 IP，填写网关所在的宿主机的 IP（不能写 localhost），或者填写域名（如果有）
 MYSQL_URL           | 数据库的 URL
 MYSQL_USER          | 用于连接数据库的用户
 MYSQL_ROOT_PASSWORD | MySQL root 用户的密码
@@ -32,11 +32,11 @@ CORE_POOL_SIZE      | 判题线程池基本大小
 MAX_POOL_SIZE       | 判题线程池最大值
 QUEUE_CAPACITY      | 判题线程池队列大小
 
-- 以上环境变量，无特殊需要只用将 `GATEWAY_HOST` 填写为本机 IP 即可
-- 单机部署时使用 `docker-compose.yml`，集群部署使用 `docker-stack.yml`
-- 连接池和线程池根据 CPU 核心数来配置
+- 以上环境变量，无特殊需要只用将 `GATEWAY_HOST` 填写为本机 IP 即可；
+- 单机部署时使用 `docker-compose.yml`，集群部署使用 `docker-stack.yml`；
+- 连接池和线程池根据 CPU 核心数来配置。
 
-## 卷
+## 数据卷
 
 > 见 `docker-compose.yml` or `docker-stack.yml` 文件中的 `volumes`部分。
 
@@ -55,12 +55,12 @@ target      | 临时存放代码和编译产生的可执行文件
 
 以下脚本会自动拉取镜像并部署：
 
-```shell
-deploy-single.cmd
+```bash
+./deploy-single.cmd
 ```
 
-```shell
-deploy-single.sh
+```bash
+./deploy-single.sh
 ```
 
 ### 集群模式
@@ -92,12 +92,14 @@ deploy:
 
 也可以使用 `node.hostname` 或者 `node.labels.role` 来更精确指定。
 
-```shell
-cloud-oj.cmd -deploy
+部署：
+
+```bash
+./cloud-oj.cmd -deploy
 ```
 
-```shell
-cloud-oj.sh -deploy
+```bash
+./cloud-oj.sh -deploy
 ```
 
 > - 使用 `-stop` 参数可以停止并删除容器（不会删除数据卷）；
@@ -114,5 +116,6 @@ cloud-oj.sh -deploy
 
 ### 说明
 
-- `GATEWAY_HOST` 设置为部署机器的 IP，不可使用 `localhost` 或 `127.0.0.1`；
-- 在部署机器上访问网页时，要使用本机 IP，不可使用 `localhost` 或 `127.0.0.1`，会出现跨域问题。
+- `GATEWAY_HOST` 设置为部署机器的 IP，不可使用 `localhost` 或 `127.0.0.1`;
+- 在部署机器上访问网页时，要使用本机 IP，不可使用 `localhost` 或 `127.0.0.1`，会被浏览器阻止；
+- 如果你有域名并且正确解析到部署机器的 IP，那么请将 `GATEWAY_HOST` 设置为域名。
