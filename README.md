@@ -73,7 +73,7 @@ target      | 临时存放代码和编译产生的可执行文件
 
 Docker 开启 Swarm 模式，使用 `cloud-oj.sh` 或 `cloud-oj.cmd` 脚本部署。
 
-**集群模式需要使用 NFS 存储测试数据**，搭建 NFS 并修改 `docker-stack.yml` 中的以下部分即可：
+集群模式需要使用 NFS 存储测试数据，搭建 NFS 并修改 `docker-stack.yml` 中的以下部分即可：
 
 ```yaml
 volumes:
@@ -86,8 +86,8 @@ volumes:
 
 #### 设置部署节点
 
-**对于 MySQL 和 RabbitMQ，务必指定节点（ `node.hostname` 或者 `node.role`）以避免重新部署时节点发生改变出现数据消失的现象，
-可以使用 `docker node ls` 查看（默认设置为在管理节点部署）**。
+对于 MySQL 和 RabbitMQ，务必指定节点（ `node.hostname` 或者 `node.role`）以避免重新部署时节点发生改变出现数据消失的现象，
+可以使用 `docker node ls` 查看（默认设置为在管理节点部署）。
 
 ```yaml
 deploy:
@@ -100,7 +100,7 @@ deploy:
 
 #### NFS 权限问题
 
-**挂载的 NFS 目录可能无法写入文件，必须设置容器的 `uid` 和宿主机一样：**
+挂载的 NFS 目录可能无法写入文件，必须设置容器的 `uid` 和宿主机一样：
 
 ```yaml
 file_server:
@@ -108,11 +108,11 @@ file_server:
   user: "1000"   # 指定 uid
 ```
 
-- 对于 Docker on Linux，**如果你使用 root 用户运行的 Docker，也许可以不用设置 `uid`**，如果不是，
+- 对于 Docker on Linux，如果你使用 root 用户运行的 Docker，也许可以不用设置 `uid`，如果不是，
 请先使用 `id <用户名>` 命令查看 `uid`，然后将 `docker-stack.yml` 中的 `user` 部分替换为 `uid`；
 - 对于 Docker Desktop for Windows，直接将 `user` 设为 `1000` 即可。
 
-> 正经人谁用 Docker Desktop 搭集群!。
+> 正经人谁用 Docker Desktop 搭集群！
 
 部署：
 
