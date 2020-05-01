@@ -36,6 +36,12 @@ QUEUE_CAPACITY      | 判题线程池队列大小
 - 单机部署时使用 `docker-compose.yml`，集群部署使用 `docker-stack.yml`；
 - 连接池和线程池根据 CPU 核心数来配置。
 
+### 说明
+
+- `GATEWAY_HOST` 设置为部署机器的 IP，不可使用 `localhost` 或 `127.0.0.1`;
+- 在部署机器上访问网页时，要使用本机 IP，不可使用 `localhost` 或 `127.0.0.1`，会被浏览器阻止；
+- 如果你有域名并且正确解析到部署机器的 IP，那么请将 `GATEWAY_HOST` 设置为域名。
+
 ## 数据卷
 
 > 见 `docker-compose.yml` or `docker-stack.yml` 文件中的 `volumes`部分。
@@ -78,19 +84,35 @@ volumes:
       device: ":/oj-file/test_data"     # 挂载目录
 ```
 
+#### 设置部署节点
+
 **对于 MySQL 和 RabbitMQ，务必指定节点（ `node.hostname` 或者 `node.role`）以避免重新部署时节点发生改变出现数据消失的现象，
 可以使用 `docker node ls` 查看（默认设置为在管理节点部署）**。
 
-约束部署节点：
-
 ```yaml
 deploy:
-    placement:
-      constraints:
-        - node.role == worker   # 指定部署节点
+  placement:
+    constraints:
+      - node.role == worker   # 指定部署节点
 ```
 
 也可以使用 `node.hostname` 或者 `node.labels.role` 来更精确指定。
+
+#### NFS 权限问题
+
+**挂载的 NFS 目录可能无法写入文件，必须设置容器的 `uid` 和宿主机一样：**
+
+```yaml
+file_server:
+  image: ...
+  user: "1000"   # 指定 uid
+```
+
+- 对于 Docker on Linux，**如果你使用 root 用户运行的 Docker，也许可以不用设置 `uid`**，如果不是，
+请先使用 `id <用户名>` 命令查看 `uid`，然后将 `docker-stack.yml` 中的 `user` 部分替换为 `uid`；
+- 对于 Docker Desktop for Windows，直接将 `user` 设为 `1000` 即可。
+
+> 正经人谁用 Docker Desktop 搭集群!。
 
 部署：
 
@@ -102,9 +124,9 @@ deploy:
 ./cloud-oj.sh -deploy
 ```
 
-> - 使用 `-stop` 参数可以停止并删除容器（不会删除数据卷）；
-> - 如果 NFS 服务器的 IP 变更，请删除 test_data 卷后再重新部署。
-> - 由于 Docker Swarm 中使用 overlay 网络时容器存在多网卡，编排文件中已经将子网设置为 `10.16.0.0/16`，请勿更改。
+- 使用 `-stop` 参数可以停止并删除容器（不会删除数据卷）；
+- 如果 NFS 服务器的 IP 变更，请删除 test_data 卷后再重新部署。
+- 由于 Docker Swarm 中使用 overlay 网络时容器存在多网卡，编排文件中已经将子网设置为 `10.16.0.0/16`，请勿更改。
 
 ### Web 页面
 
@@ -113,9 +135,3 @@ deploy:
 - OJ 主页：`http://IP_ADDRESS/oj/`
 
 系统初始管理员用户名和密码均为 `root`。
-
-### 说明
-
-- `GATEWAY_HOST` 设置为部署机器的 IP，不可使用 `localhost` 或 `127.0.0.1`;
-- 在部署机器上访问网页时，要使用本机 IP，不可使用 `localhost` 或 `127.0.0.1`，会被浏览器阻止；
-- 如果你有域名并且正确解析到部署机器的 IP，那么请将 `GATEWAY_HOST` 设置为域名。
