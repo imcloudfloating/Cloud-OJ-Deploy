@@ -1,4 +1,4 @@
-# Cloud OJ Docker Deploy
+# Cloud OJ Deploy Script
 
 这是一个微服务架构的 Online Judge，基于 [Spring Cloud](https://spring.io/projects/spring-cloud/)，使用 Docker 部署。
 本系统参考了 [HUSTOJ](https://github.com/zhblue/hustoj)，功能上目前比较简陋。
@@ -32,34 +32,29 @@ CORE_POOL_SIZE      | 判题线程池基本大小
 MAX_POOL_SIZE       | 判题线程池最大值
 QUEUE_CAPACITY      | 判题线程池队列大小
 
-- 以上环境变量，无特殊需要只用将 `GATEWAY_HOST` 填写为本机 IP 即可；
-- 单机部署时使用 `docker-compose.yml`，集群部署使用 `docker-stack.yml`；
-- 连接池和线程池根据 CPU 核心数来配置。
-
-### 说明
-
-- `GATEWAY_HOST` 设置为部署机器的 IP，不可使用 `localhost` 或 `127.0.0.1`;
-- 在部署机器上访问网页时，要使用本机 IP，不可使用 `localhost` 或 `127.0.0.1`，会被浏览器阻止；
-- 如果你有域名并且正确解析到部署机器的 IP，那么请将 `GATEWAY_HOST` 设置为域名。
+- 以上环境变量，无特殊需要只用将 `GATEWAY_HOST` 填写为本机 IP 即可（不可使用 `localhost` 或 `127.0.0.1`）；
+- 如果你有域名并且正确解析到部署机器的 IP，那么将 `GATEWAY_HOST` 设置为域名。
+- 连接池和线程池根据 CPU 核心数来配置；
 
 ## 数据卷
 
-> 见 `docker-compose.yml` or `docker-stack.yml` 文件中的 `volumes`部分。
-
-volume      | 说明
+卷          | 说明
 ------------|----------------------------------
-mysql       | MySQL 数据目录
-rabbit      | RabbitMQ 数据目录
-test_data   | 存放测试数据（集群部署时请使用NFS）
+mysql       | MySQL 数据
+rabbit      | RabbitMQ 数据
+log         | 日志文件
+test_data   | 存放测试数据（集群部署时挂载 NFS）
 target      | 临时存放代码和编译产生的可执行文件
+
+> 见 `docker-compose.yml` or `docker-stack.yml` 文件中的 `volumes`部分。
 
 ## 部署与运行
 
 请先安装并配置 Docker，集群部署需要 Docker Swarm。
 
-### 单机模式
+### 单机部署
 
-以下脚本会自动拉取镜像并部署：
+单机部署使用 `docker-compose.yml`，以下脚本会自动拉取镜像并部署：
 
 ```bash
 ./deploy-single.cmd

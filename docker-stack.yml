@@ -7,7 +7,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 512M
+          memory: 1024M
       placement:
         constraints:
           - node.role == manager
@@ -17,6 +17,8 @@ services:
       - target: 8761
         published: 8761
         mode: ingress
+    volumes:
+      - "log:/app/log"
 
   # 服务监控
   monitor_service:
@@ -24,7 +26,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 512M
+          memory: 1024M
       placement:
         constraints:
           - node.role == manager
@@ -34,6 +36,8 @@ services:
       - target: 5000
         published: 5000
         mode: ingress
+    volumes:
+      - "log:/app/log"
     environment:
       EUREKA_SERVER: "eureka:8761"
 
@@ -43,7 +47,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 2048M
+          memory: 1024M
       placement:
         constraints:
           - node.role == manager
@@ -53,6 +57,8 @@ services:
       - target: 80
         published: 80
         mode: ingress
+    volumes:
+      - "log:/app/log"
     environment:
       EUREKA_SERVER: "eureka:8761"
       MYSQL_URL: "jdbc:mysql://mysql:3306/cloud_oj"
@@ -73,6 +79,8 @@ services:
           - node.role == worker
     networks:
       - oj-net
+    volumes:
+      - "log:/app/log"
     environment:
       EUREKA_SERVER: "eureka:8761"
       GATEWAY_HOST: "192.168.1.3"
@@ -90,6 +98,8 @@ services:
           - node.role == worker
     networks:
       - oj-net
+    volumes:
+      - "log:/app/log"
     environment:
       EUREKA_SERVER: "eureka:8761"
       MYSQL_URL: "jdbc:mysql://mysql:3306/cloud_oj?allowMultiQueries=true"
@@ -105,7 +115,7 @@ services:
       replicas: 2
       resources:
         limits:
-          memory: 512M
+          memory: 1024M
       placement:
         constraints:
           - node.role == worker
@@ -113,6 +123,7 @@ services:
       - oj-net
     volumes:
       - "test_data:/test_data"     # 挂载测试数据目录
+      - "log:/app/log"
     environment:
       EUREKA_SERVER: "eureka:8761"
 
@@ -123,7 +134,7 @@ services:
       replicas: 2
       resources:
         limits:
-          memory: 2048M
+          memory: 3072M
       placement:
         constraints:
           - node.role == worker
@@ -131,7 +142,8 @@ services:
       - oj-net
     volumes:
       - "test_data:/test_data"
-      # - "target:/target"           # 挂载可执行文件目录（非必须）
+      - "target:/target"
+      - "log:/app/log"
     environment:
       EUREKA_SERVER: "eureka:8761"
       MYSQL_URL: "jdbc:mysql://mysql:3306/cloud_oj"
@@ -204,6 +216,7 @@ volumes:
   mysql:
   rabbit:
   target:
+  log:
   test_data:
     driver_opts:
       type: "nfs"
