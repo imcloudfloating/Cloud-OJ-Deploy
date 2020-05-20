@@ -106,8 +106,8 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - "./mysql-database/config:/etc/mysql/conf.d"
-      - "./mysql-database/initdb:/docker-entrypoint-initdb.d"
+      - "./mysql/config:/etc/mysql/conf.d"
+      - "./mysql/sql:/docker-entrypoint-initdb.d"
       - "mysql:/var/lib/mysql"    # 数据目录
     environment:
       MYSQL_ROOT_PASSWORD: "cloud"

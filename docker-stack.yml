@@ -201,9 +201,9 @@ services:
 
 configs:
   mysql_config:
-    file: ./mysql-database/config/my.cnf              # mysql 配置文件
+    file: ./mysql/config/my.cnf           # mysql 配置文件
   init_sql:
-    file: ./mysql-database/initdb/init_cloud_oj.sql   # 数据库初始化脚本
+    file: ./mysql/sql/init_cloud_oj.sql   # 数据库初始化脚本
 
 networks:
   oj-net:

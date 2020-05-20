@@ -1,17 +1,18 @@
 # Cloud OJ Deploy Script
 
-这是一个微服务架构的 Online Judge，基于 [Spring Cloud](https://spring.io/projects/spring-cloud/)，使用 Docker 部署。
+这是一个微服务架构的 Online Judge，基于 [Spring Cloud](https://spring.io/projects/spring-cloud/)，通过 Docker 部署。
 本系统参考了 [HUSTOJ](https://github.com/zhblue/hustoj)，功能上目前比较简陋。
 
 ![Commit Code](https://note-and-blog.oss-cn-beijing.aliyuncs.com/cloud_oj/commit_code.png)
 
 支持的语言：
 
-- C/C++
+- C
+- C++
 - Java
 - Python
-- C#
 - Bash Shell
+- C#
 
 ## 环境变量
 
