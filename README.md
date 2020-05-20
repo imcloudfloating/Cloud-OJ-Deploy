@@ -3,14 +3,16 @@
 这是一个微服务架构的 Online Judge，基于 [Spring Cloud](https://spring.io/projects/spring-cloud/)，通过 Docker 部署。
 本系统参考了 [HUSTOJ](https://github.com/zhblue/hustoj)，功能上目前比较简陋。
 
+![Index](https://note-and-blog.oss-cn-beijing.aliyuncs.com/cloud_oj/index.png)
+
 ![Commit Code](https://note-and-blog.oss-cn-beijing.aliyuncs.com/cloud_oj/commit_code.png)
 
-支持的语言：
+## 支持的语言
 
 - C
-- C++
-- Java
-- Python
+- C++ 14
+- Java 1.8
+- Python 3.5
 - Bash Shell
 - C#
 
@@ -34,8 +36,8 @@ MAX_POOL_SIZE       | 判题线程池最大值
 QUEUE_CAPACITY      | 判题线程池队列大小
 
 - 以上环境变量，无特殊需要只用将 `GATEWAY_HOST` 填写为本机 IP 即可（不可使用 `localhost` 或 `127.0.0.1`）；
-- 如果你有域名并且正确解析到部署机器的 IP，那么将 `GATEWAY_HOST` 设置为域名。
-- 连接池和线程池根据 CPU 核心数来配置；
+- 如果你有域名并且正确解析到部署机器的 IP，那么将 `GATEWAY_HOST` 设置为域名；
+- 连接池和线程池根据 CPU 核心数来配置。
 
 ## 数据卷
 
