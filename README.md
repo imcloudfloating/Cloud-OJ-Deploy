@@ -5,9 +5,9 @@
 
 > 本系统参考了 [HUSTOJ](https://github.com/zhblue/hustoj)。
 
-![Index](https://note-and-blog.oss-cn-beijing.aliyuncs.com/cloud_oj/index.png)
+![Index](https://note-and-blog.oss-cn-beijing.aliyuncs.com/cloud_oj/oj-index.png)
 
-![Commit Code](https://note-and-blog.oss-cn-beijing.aliyuncs.com/cloud_oj/commit_code.png)
+![Commit Code](https://note-and-blog.oss-cn-beijing.aliyuncs.com/cloud_oj/commit.png)
 
 ## 支持的语言
 
