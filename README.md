@@ -1,7 +1,9 @@
 # Cloud OJ Deploy Script
 
-这是一个微服务架构的 Online Judge，基于 [Spring Cloud](https://spring.io/projects/spring-cloud/)，通过 Docker 部署。
-本系统参考了 [HUSTOJ](https://github.com/zhblue/hustoj)，功能上目前比较简陋。
+这是一个微服务架构的 Online Judge，基于 [Spring Cloud](https://spring.io/projects/spring-cloud/)，
+使用 Docker 部署，功能上目前比较简洁。
+
+> 本系统参考了 [HUSTOJ](https://github.com/zhblue/hustoj)。
 
 ![Index](https://note-and-blog.oss-cn-beijing.aliyuncs.com/cloud_oj/index.png)
 
@@ -18,10 +20,10 @@
 
 ## 环境变量
 
-名称                | 说明
+Env Name            | Description
 --------------------|----------------------------------------------------
 EUREKA_SERVER       | 注册中心，填写注册中心的服务名
-GATEWAY_HOST        | 网关的 IP，填写网关所在的宿主机的 IP（不能写 localhost），或者填写域名（如果有）
+GATEWAY_HOST        | 路由网关的主机名，该值给前端使用
 MYSQL_URL           | 数据库的 URL
 MYSQL_USER          | 用于连接数据库的用户
 MYSQL_ROOT_PASSWORD | MySQL root 用户的密码
@@ -30,13 +32,13 @@ DB_POOL_SIZE        | 数据库连接池大小
 RABBIT_URL          | RabbitMQ 的 IP
 RABBIT_PORT         | RabbitMQ 的 端口
 RABBIT_USER         | RabbitMQ 的用户名
-RABBIT_PASSWD       | RabbitMQ 的密码
+RABBIT_PASSWORD     | RabbitMQ 的密码
 CORE_POOL_SIZE      | 判题线程池基本大小
 MAX_POOL_SIZE       | 判题线程池最大值
 QUEUE_CAPACITY      | 判题线程池队列大小
 
-- 以上环境变量，无特殊需要只用将 `GATEWAY_HOST` 填写为本机 IP 即可（不可使用 `localhost` 或 `127.0.0.1`）；
-- 如果你有域名并且正确解析到部署机器的 IP，那么将 `GATEWAY_HOST` 设置为域名；
+- 以上环境变量，无特殊需求只用将 `GATEWAY_HOST` 填写为服务器的 IP 即可（不可使用 `localhost` 或 `127.0.0.1`）；
+如果你有域名并且正确解析到服务器的 IP，那么将 `GATEWAY_HOST` 设置为域名；
 - 连接池和线程池根据 CPU 核心数来配置。
 
 ## 数据卷
@@ -51,7 +53,7 @@ target      | 临时存放代码和编译产生的可执行文件
 
 > 见 `docker-compose.yml` or `docker-stack.yml` 文件中的 `volumes`部分。
 
-## 部署与运行
+## 部署
 
 请先安装并配置 Docker，集群部署需要 Docker Swarm。
 
@@ -82,6 +84,20 @@ volumes:
       device: ":/oj-file/test_data"     # 挂载目录
 ```
 
+#### NFS 权限问题
+
+挂载的 NFS 目录可能无法写入文件，必须设置容器的 `uid` 与宿主机一致：
+
+```yaml
+file_server:
+  image: ...
+  user: "1000"   # 指定 uid
+```
+
+- 对于 Docker on Linux，如果你使用 root 用户运行的 Docker，也许可以不用设置 `uid`，如果不是，
+请先使用 `id <用户名>` 命令查看 `uid`，然后将 `docker-stack.yml` 中的 `user` 部分替换；
+- 对于 Docker Desktop for Windows，直接将 `user` 设为 `1000` 即可。
+
 #### 设置部署节点
 
 对于 MySQL 和 RabbitMQ，务必指定节点（ `node.hostname` 或者 `node.role`）以避免重新部署时节点发生改变出现数据消失的现象，
@@ -94,23 +110,8 @@ deploy:
       - node.role == worker   # 指定部署节点
 ```
 
-也可以使用 `node.hostname` 或者 `node.labels.role` 来更精确指定。
-
-#### NFS 权限问题
-
-挂载的 NFS 目录可能无法写入文件，必须设置容器的 `uid` 和宿主机一样：
-
-```yaml
-file_server:
-  image: ...
-  user: "1000"   # 指定 uid
-```
-
-- 对于 Docker on Linux，如果你使用 root 用户运行的 Docker，也许可以不用设置 `uid`，如果不是，
-请先使用 `id <用户名>` 命令查看 `uid`，然后将 `docker-stack.yml` 中的 `user` 部分替换为 `uid`；
-- 对于 Docker Desktop for Windows，直接将 `user` 设为 `1000` 即可。
-
-> 正经人谁用 Docker Desktop 搭集群！
+> 也可以使用 `node.hostname` 或者 `node.labels.role` 来更精确指定，
+> 具体可参考 [Docker 官方文档](https://docs.docker.com/compose/compose-file/#placement)。
 
 部署：
 
@@ -123,13 +124,13 @@ file_server:
 ```
 
 - 使用 `-stop` 参数可以停止并删除容器（不会删除数据卷）；
-- 如果 NFS 服务器的 IP 变更，请删除 test_data 卷后再重新部署。
+- 如果 NFS 服务器的 IP 变更，请删除 test_data 卷后再重新部署；
 - 由于 Docker Swarm 中使用 overlay 网络时容器存在多网卡，编排文件中已经将子网设置为 `10.16.0.0/16`，请勿更改。
 
 ### Web 页面
 
-- 监控中心：`http://IP_ADDRESS:5000`
-- 注册中心：`http://IP_ADDRESS:8761`
-- OJ 主页：`http://IP_ADDRESS/oj/`
+- 监控中心：`http://HOST_NAME:5000`
+- 注册中心：`http://HOST_NAME:8761`
+- OJ 主页：`http://HOST_NAME/oj/`
 
 系统初始管理员用户名和密码均为 `root`。
