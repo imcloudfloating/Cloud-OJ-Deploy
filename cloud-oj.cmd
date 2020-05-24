@@ -15,11 +15,11 @@
     @echo Stopping Cloud-OJ...
     docker stack rm cloud_oj
 ) else if "%1" == "-ps" (
-    docker stack ps cloud_oj
+    docker stack ps cloud_oj --format "table {{.Name}}\t{{.Node}}\t{{.CurrentState}}\t{{.Error}}"
 ) else (
     @echo arg:
-    @echo   -deploy     deploy Cloud-OJ
-    @echo   -ps         list containers of Cloud-OJ
-    @echo   -stop       stop and delete containers of Cloud-OJ
+    @echo   -deploy     deploy services.
+    @echo   -ps         show containers.
+    @echo   -stop       stop and remove containers.
     @pause
 )

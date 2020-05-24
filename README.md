@@ -18,44 +18,14 @@
 - Bash Shell
 - C#
 
-## 环境变量
-
-Env Name            | Description
---------------------|----------------------------------------------------
-EUREKA_SERVER       | 注册中心，填写注册中心的服务名
-GATEWAY_HOST        | 路由网关的主机名，该值给前端使用
-MYSQL_URL           | 数据库的 URL
-MYSQL_USER          | 用于连接数据库的用户
-MYSQL_ROOT_PASSWORD | MySQL root 用户的密码
-MYSQL_PASSWORD      | 数据库的密码
-DB_POOL_SIZE        | 数据库连接池大小
-RABBIT_URL          | RabbitMQ 的 IP
-RABBIT_PORT         | RabbitMQ 的 端口
-RABBIT_USER         | RabbitMQ 的用户名
-RABBIT_PASSWORD     | RabbitMQ 的密码
-CORE_POOL_SIZE      | 判题线程池基本大小
-MAX_POOL_SIZE       | 判题线程池最大值
-QUEUE_CAPACITY      | 判题线程池队列大小
-
-- 以上环境变量，无特殊需求只用将 `GATEWAY_HOST` 填写为服务器的 IP 即可（不可使用 `localhost` 或 `127.0.0.1`）；
-如果你有域名并且正确解析到服务器的 IP，那么将 `GATEWAY_HOST` 设置为域名；
-- 连接池和线程池根据 CPU 核心数来配置。
-
-## 数据卷
-
-卷          | 说明
-------------|----------------------------------
-mysql       | MySQL 数据
-rabbit      | RabbitMQ 数据
-log         | 日志文件
-test_data   | 存放测试数据（集群部署时挂载 NFS）
-target      | 临时存放代码和编译产生的可执行文件
-
-> 见 `docker-compose.yml` or `docker-stack.yml` 文件中的 `volumes`部分。
-
 ## 部署
 
 请先安装并配置 Docker，集群部署需要 Docker Swarm。
+
+设置环境变量：
+
+1. 将编排文件中的 `GATEWAY_HOST` 填写为服务器的 IP 或域名（需要加协议前缀 `http`）；
+2. 编排文件中的连接池和线程池根据 CPU 核心数配置。
 
 ### 单机部署
 
@@ -129,8 +99,8 @@ deploy:
 
 ### Web 页面
 
+- OJ 主页：`http://HOST_NAME`
 - 监控中心：`http://HOST_NAME:5000`
 - 注册中心：`http://HOST_NAME:8761`
-- OJ 主页：`http://HOST_NAME/oj/`
 
 系统初始管理员用户名和密码均为 `root`。
