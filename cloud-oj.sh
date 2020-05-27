@@ -17,7 +17,7 @@ elif [ "$1" == "-stop" ]; then
 elif [ "$1" == "-ps" ]; then
     docker stack ps cloud_oj --format "table {{.Name}}\t{{.Node}}\t{{.CurrentState}}\t{{.Error}}"
 elif [ "$1" == "-clean" ]; then
-    docker rmi "$(docker images -q -f dangling=true)"
+    docker rmi $(docker images -q -f dangling=true)
 else
     echo "arg:"
     echo "  -deploy    deploy services."
