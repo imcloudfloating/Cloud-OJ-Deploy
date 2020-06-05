@@ -1,6 +1,8 @@
 # Cloud OJ Deploy Script
 
-![Index](https://github.com/imcloudfloating/Images/blob/master/oj-index.png?raw=true)
+Cloud OJ 自动部署脚本，项目源码：[Cloud-OJ](https://github.com/imcloudfloating/Cloud-OJ)
+
+![Index Page](https://note-and-blog.oss-cn-beijing.aliyuncs.com/cloud_oj/oj-index.png)
 
 ## 支持的语言
 
@@ -120,7 +122,7 @@ deploy:
 - 监控中心：`http://HOST_NAME:5000`
 - 注册中心：`http://HOST_NAME:8761`
 
-系统初始管理员用户名和密码均为 `root`。
+> 系统初始管理员用户名和密码均为 `root`。
 
 ## 环境变量
 
