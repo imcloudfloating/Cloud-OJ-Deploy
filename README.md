@@ -1,8 +1,8 @@
 # Cloud OJ Deploy Script
 
-Cloud OJ 自动部署脚本，项目源码：[Cloud-OJ](https://github.com/imcloudfloating/Cloud-OJ)
+Cloud OJ 自动部署脚本，项目源码：[Cloud-OJ](https://github.com/imcloudfloating/Cloud-OJ)。
 
-![Index Page](https://note-and-blog.oss-cn-beijing.aliyuncs.com/cloud_oj/oj-index.png)
+<img src="https://note-and-blog.oss-cn-beijing.aliyuncs.com/cloud_oj/oj-index.png"  alt="Index Page"/>
 
 ## 支持的语言
 
