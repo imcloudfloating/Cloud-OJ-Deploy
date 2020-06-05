@@ -2,7 +2,7 @@
 
 Cloud OJ 自动部署脚本，项目源码：[Cloud-OJ](https://github.com/imcloudfloating/Cloud-OJ)。
 
-<img src="https://note-and-blog.oss-cn-beijing.aliyuncs.com/cloud_oj/oj-index.png"  alt="Index Page"/>
+![Index Page](index-page.png)
 
 ## 支持的语言
 
