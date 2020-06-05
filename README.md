@@ -1,10 +1,5 @@
 # Cloud OJ Deploy Script
 
-这是一个微服务架构的 Online Judge，基于 [Spring Cloud](https://spring.io/projects/spring-cloud/)，
-使用 Docker 部署，功能上目前比较简洁。
-
-> 本系统参考了 [HUSTOJ](https://github.com/zhblue/hustoj)。
-
 ![Index](https://github.com/imcloudfloating/Images/blob/master/oj-index.png?raw=true)
 
 ## 支持的语言
@@ -37,7 +32,7 @@
 
 ## 部署指南
 
-请先安装并配置 Docker，集群部署需要 Docker Swarm。
+此部署脚本基于 Docker、Docker Swarm 部署，请先安装并配置好 Docker。
 
 设置环境变量：
 
