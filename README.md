@@ -2,8 +2,6 @@
 
 Cloud OJ 自动部署脚本，项目源码：[Cloud-OJ](https://github.com/imcloudfloating/Cloud-OJ)。
 
-![Index Page](https://note-and-blog.oss-cn-beijing.aliyuncs.com/cloud_oj/index-page.jpg)
-
 ## 支持的语言
 
 - C
@@ -12,6 +10,8 @@ Cloud OJ 自动部署脚本，项目源码：[Cloud-OJ](https://github.com/imclo
 - Python 3.5
 - Bash Shell
 - C#
+
+![Commit Page](https://note-and-blog.oss-cn-beijing.aliyuncs.com/cloud_oj/commit.png)
 
 ## 目录结构
 
