@@ -57,6 +57,7 @@ services:
       - oj-net
     volumes:
       - "log:/app/log"
+      - "test_data:/test_data"
     environment:
       EUREKA_SERVER: "eureka:8761"
       MYSQL_URL: "jdbc:mysql://mysql:3306/cloud_oj?allowMultiQueries=true"
