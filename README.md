@@ -11,7 +11,9 @@ Cloud OJ 自动部署脚本，项目源码：[Cloud-OJ](https://github.com/imclo
 - Bash Shell
 - C#
 
-![Commit Page](https://note-and-blog.oss-cn-beijing.aliyuncs.com/cloud_oj/commit.png)
+## 系统结构
+
+![Structure](https://note-and-blog.oss-cn-beijing.aliyuncs.com/cloud_oj/system-structure.svg)
 
 ## 目录结构
 
