@@ -15,20 +15,10 @@ elif [ "$1" == "--stop-single" ]; then
     docker-compose down
 elif [ "$1" == "--ps" ]; then
     docker stack ps cloud_oj --format "table {{.Name}}\t{{.Node}}\t{{.CurrentState}}\t{{.Error}}"
-elif [ "$1" == "--update-images" ]; then
-    # 拉取最新镜像
-    docker pull registry.cn-hangzhou.aliyuncs.com/cloudli/register-center:latest
-    docker pull registry.cn-hangzhou.aliyuncs.com/cloudli/file-server:latest
-    docker pull registry.cn-hangzhou.aliyuncs.com/cloudli/monitor-service:latest
-    docker pull registry.cn-hangzhou.aliyuncs.com/cloudli/api-gateway:latest
-    docker pull registry.cn-hangzhou.aliyuncs.com/cloudli/manager-service:latest
-    docker pull registry.cn-hangzhou.aliyuncs.com/cloudli/judge-service:latest
-    docker pull registry.cn-hangzhou.aliyuncs.com/cloudli/cloud-oj-web:latest
 else
     echo "arg:"
     echo "      --deploy            deploy on Docker Swarm."
     echo "      --deploy-single     deploy on single node."
-    echo "      --update-images     update images to latest."
     echo "      --ps                list services on Docker Swarm."
     echo "      --stop              stop and remove containers."
     echo "      --stop-single       stop the services deployed by docker-compose."

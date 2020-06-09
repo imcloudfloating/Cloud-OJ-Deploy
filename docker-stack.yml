@@ -3,7 +3,7 @@ version: "3.4"
 services:
   # 注册中心
   eureka:
-    image: registry.cn-hangzhou.aliyuncs.com/cloudli/register-center
+    image: registry.cn-hangzhou.aliyuncs.com/cloudli/register-center:latest
     deploy:
       resources:
         limits:
@@ -22,7 +22,7 @@ services:
 
   # 服务监控
   monitor_service:
-    image: registry.cn-hangzhou.aliyuncs.com/cloudli/monitor-service
+    image: registry.cn-hangzhou.aliyuncs.com/cloudli/monitor-service:latest
     deploy:
       resources:
         limits:
@@ -43,7 +43,7 @@ services:
 
   # 路由网关
   api_gateway:
-    image: registry.cn-hangzhou.aliyuncs.com/cloudli/api-gateway
+    image: registry.cn-hangzhou.aliyuncs.com/cloudli/api-gateway:latest
     deploy:
       resources:
         limits:
@@ -68,7 +68,7 @@ services:
 
   # Web
   oj_web:
-    image: registry.cn-hangzhou.aliyuncs.com/cloudli/cloud-oj-web
+    image: registry.cn-hangzhou.aliyuncs.com/cloudli/cloud-oj-web:latest
     deploy:
       replicas: 2
       resources:
@@ -87,7 +87,7 @@ services:
 
   # 管理服务
   manager_service:
-    image: registry.cn-hangzhou.aliyuncs.com/cloudli/manager-service
+    image: registry.cn-hangzhou.aliyuncs.com/cloudli/manager-service:latest
     deploy:
       replicas: 2
       resources:
@@ -110,7 +110,7 @@ services:
 
   # 文件服务
   file_server:
-    image: registry.cn-hangzhou.aliyuncs.com/cloudli/file-server
+    image: registry.cn-hangzhou.aliyuncs.com/cloudli/file-server:latest
     user: "1000"    # 指定 uid
     deploy:
       replicas: 2
@@ -130,7 +130,7 @@ services:
 
   # 判题服务
   judge_service:
-    image: registry.cn-hangzhou.aliyuncs.com/cloudli/judge-service
+    image: registry.cn-hangzhou.aliyuncs.com/cloudli/judge-service:latest
     deploy:
       replicas: 2
       resources:
