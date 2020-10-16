@@ -24,12 +24,10 @@ services:
       EUREKA_SERVER: "eureka:8761"
 
   # 路由网关
-  api_gateway:
+  gateway:
     image: registry.cn-hangzhou.aliyuncs.com/cloud_oj/api-gateway:latest
     networks:
       - oj-net
-    ports:
-      - "80:80"
     volumes:
       - "log:/app/log"
     environment:

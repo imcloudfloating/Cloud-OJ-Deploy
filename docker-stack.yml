@@ -42,7 +42,7 @@ services:
       EUREKA_SERVER: "eureka:8761"
 
   # 路由网关
-  api_gateway:
+  gateway:
     image: registry.cn-hangzhou.aliyuncs.com/cloud_oj/api-gateway:latest
     deploy:
       resources:
@@ -53,10 +53,6 @@ services:
           - node.role == manager
     networks:
       - oj-net
-    ports:
-      - target: 80
-        published: 80
-        mode: ingress
     volumes:
       - "log:/app/log"
     environment:
