@@ -42,6 +42,8 @@ services:
     image: registry.cn-hangzhou.aliyuncs.com/cloud_oj/web:latest
     networks:
       - oj-net
+    ports: 
+      - "80:80"
     environment:
       API_HOST: "gateway"
 
