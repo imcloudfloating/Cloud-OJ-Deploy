@@ -1,14 +1,12 @@
 # Cloud OJ Deploy Script
 
-Cloud OJ 自动部署脚本
+Cloud OJ 部署脚本（仅支持 Docker）
 项目源码：[Cloud-OJ](https://github.com/imcloudfloating/Cloud-OJ)
-
-> 如果你非常熟悉 Docker、Docker Swarm，可以忽略部署脚本。
 
 ## 目录结构
 
 ```bash
-│  cloud-oj.cmd         # Windows 部署脚本
+│  cloud-oj.cmd         # Windows 部署脚本，一般用不上
 │  cloud-oj.sh          # Linux 部署脚本
 │  docker-compose.yml   # 单机部署的编排文件
 │  docker-stack.yml     # 集群部署的编排文件
@@ -22,6 +20,8 @@ Cloud OJ 自动部署脚本
     └─sql
            init_cloud_oj.sql   # 数据库初始化脚本
 ```
+
+> 如果你非常熟悉 Docker、Docker Swarm，可以忽略部署脚本。
 
 ## 部署指南
 
@@ -100,6 +100,62 @@ deploy:
 
 > 系统初始管理员用户名和密码均为 `root`。
 
+### 配置 HTTPS
+
+> 提示：如果不需要使用 HTTPS，请忽略这部分。
+
+#### 单机部署的配置方法
+
+修改 `web` 部分，将含有 SSL 证书和 Key 的目录挂载到容器的 `/ssl` 目录下
+
+```yaml
+web:
+  ...
+  ports: 
+    - "80:80"
+    - "443:443"
+  volumes:
+    - "宿主机SSL证书目录:/ssl"
+  environment:
+    API_HOST: "gateway"
+    ENABLE_HTTPS: "true"
+    EXTERNAL_URL: "Domain or IP"    # 用于 http 自动转 https，填写 IP 或域名
+    SSL_CERT: "example.pem"         # SSL 证书文件名，pem 或 crt 文件
+    SSL_KEY: "example.key"          # SSL Key 文件名
+```
+
+> `EXTERNAL_URL` 若不设置，那么必须手动加上 `https://` 才能打开网站。
+
+#### 集群部署的配置方法
+
+如果使用 Docker Swarm 部署，SSL 证书需要使用 `configs`。修改 `docker-stack.yml` 文件，添加 SSL 证书的 `configs`：
+
+```yaml
+configs:
+  ssl_cert:
+    file: .pem/.crt 文件的路径
+  ssl_key:
+    file: .key 文件的路径
+```
+
+修改 `web` 部分，增加 `configs`，其它部分与单机部署相同：
+
+```yaml
+web:
+  ...
+  configs:
+    - source: ssl_cert
+      target: /ssl/example.pem
+    - source: ssl_key
+      target: /ssl/example.key
+  environment:
+    ...
+    SSL_CERT: "example.pem"
+    SSL_KEY: "example.key"
+```
+
+> 提示：如果你使用的是 Docker Desktop for Windows，那么配置 HTTPS 后可能会出现 403 的情况。
+
 ## 环境变量
 
 | Environment Name    | 说明
@@ -125,5 +181,5 @@ deploy:
 | mysql     | MySQL 数据
 | rabbit    | RabbitMQ 数据
 | log       | 存放服务的日志文件
-| oj_file   | 存放测试数据、图片等文件（集群部署时挂载 NFS）
+| oj_file   | 存放测试数据、图片等文件（集群部署时需要挂载 NFS）
 | target    | 临时存放代码和编译产生的可执行文件
