@@ -1,6 +1,7 @@
 # Cloud OJ Deploy Script
 
 Cloud OJ 部署脚本（仅支持 Docker）
+
 项目源码：[Cloud-OJ](https://github.com/imcloudfloating/Cloud-OJ)
 
 ## 目录结构
@@ -43,7 +44,7 @@ Cloud OJ 部署脚本（仅支持 Docker）
 
 由于判题使用了 Docker in Docker，因此以下两个数据卷的路径不可修改：
 
-```
+```yaml
 volumes:
   - "/var/lib/cloud_oj:/var/lib/cloud_oj"
   - "/tmp/code:/tmp/code"
