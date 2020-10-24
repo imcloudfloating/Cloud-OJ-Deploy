@@ -23,7 +23,7 @@ Cloud OJ 部署脚本（仅支持 Docker）
 
 > 如果你非常熟悉 Docker、Docker Swarm，可以忽略部署脚本。
 
-## 部署指南
+## 部署方法
 
 此部署脚本基于 Docker、Docker Swarm 部署，请先安装并配置好 Docker。
 
@@ -41,35 +41,26 @@ Cloud OJ 部署脚本（仅支持 Docker）
 ./cloud-oj.sh --deploy-single
 ```
 
-```bash
-./cloud-oj.cmd --deploy-single
+由于判题使用了 Docker in Docker，因此以下两个数据卷的路径不可修改：
+
+```
+volumes:
+  - "/var/lib/cloud_oj:/var/lib/cloud_oj"
+  - "/tmp/code:/tmp/code"
 ```
 
 ### 2. 集群模式
 
-搭建 Docker Swarm 集群，集群模式需要使用 NFS 存储测试数据，搭建 NFS 并修改 `docker-stack.yml` 中的以下部分：
+搭建 Docker Swarm 集群，集群模式需要使用 NFS 存储测试数据，将宿主机的 `/var/lib/cloud_oj` 目录挂载到你的 NFS 服务器即可。
 
-```yaml
-volumes:
-  oj_file:
-    driver_opts:
-      type: "nfs"
-      o: "addr=192.168.1.6,rw"      # NFS IP 地址
-      device: ":/oj_file"           # 挂载目录
-```
-
-#### NFS 权限问题
-
-挂载的 NFS 目录可能无法写入文件，必须设置容器的 `uid` 与宿主机一致：
+若挂载的 NFS 目录无法写入文件，请设置容器的 `uid` 与宿主机一致：
 
 ```yaml
 file_server:
-  image: ...
   user: "1000"   # 指定 uid
 ```
 
-- 对于 Docker on Linux，如果你使用 root 用户运行的 Docker，也许可以不用设置 `uid`，如果不是，请先使用 `id <用户名>` 命令查看 `uid`，然后将 `docker-stack.yml` 中的 `user` 部分替换；
-- 对于 Docker Desktop for Windows，直接将 `user` 设为 `1000` 即可。
+如果你使用 root 用户运行的 Docker，也许可以不用设置 `uid`，如果不是，请先使用 `id <用户名>` 命令查看 `uid`，然后将 `docker-stack.yml` 中的 `user` 部分替换
 
 #### 设置服务的节点
 
@@ -87,20 +78,14 @@ deploy:
 部署：
 
 ```bash
-./cloud-oj.cmd --deploy
-```
-
-```bash
 ./cloud-oj.sh --deploy
 ```
 
-- 使用 `--stop` 参数可以停止并删除容器（不会删除数据卷）；
-- 如果 NFS 服务器的 IP 变更，请删除 `oj_file` 卷后再重新部署；
-- 由于 Docker Swarm 中使用 overlay 网络时容器存在多网卡，编排文件中已经将子网设置为 `10.16.0.0/16`，请勿更改。
+**提示：由于 Docker Swarm 中使用 overlay 网络时容器存在多网卡，编排文件中已经将子网设置为 `10.16.0.0/16`，请勿更改**
 
-> 系统初始管理员用户名和密码均为 `root`。
+> OJ 初始管理员用户名和密码均为 `root`
 
-### 配置 HTTPS
+### 配置 HTTPS（可选）
 
 > 提示：如果不需要使用 HTTPS，请忽略这部分。
 
@@ -117,14 +102,14 @@ web:
   volumes:
     - "宿主机SSL证书目录:/ssl"
   environment:
-    API_HOST: "gateway"
+    ...
     ENABLE_HTTPS: "true"
     EXTERNAL_URL: "Domain or IP"    # 用于 http 自动转 https，填写 IP 或域名
     SSL_CERT: "example.pem"         # SSL 证书文件名，pem 或 crt 文件
     SSL_KEY: "example.key"          # SSL Key 文件名
 ```
 
-> `EXTERNAL_URL` 若不设置，那么必须手动加上 `https://` 才能打开网站。
+> 提示：`EXTERNAL_URL` 若不设置，那么必须手动加上 `https://` 才能打开网站。
 
 #### 集群部署的配置方法
 
@@ -181,5 +166,3 @@ web:
 | mysql     | MySQL 数据
 | rabbit    | RabbitMQ 数据
 | log       | 存放服务的日志文件
-| oj_file   | 存放测试数据、图片等文件（集群部署时需要挂载 NFS）
-| target    | 临时存放代码和编译产生的可执行文件

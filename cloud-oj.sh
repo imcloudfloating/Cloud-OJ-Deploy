@@ -20,6 +20,6 @@ else
     echo "      --deploy            deploy on Docker Swarm."
     echo "      --deploy-single     deploy on single node."
     echo "      --ps                list services on Docker Swarm."
-    echo "      --stop              stop and remove containers."
-    echo "      --stop-single       stop the services deployed by docker-compose."
+    echo "      --stop              stop services deployed by docker swarm."
+    echo "      --stop-single       stop services deployed by docker-compose."
 fi
