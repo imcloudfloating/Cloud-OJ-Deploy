@@ -1,6 +1,7 @@
 create database cloud_oj character set utf8mb4;
 use cloud_oj;
 set character set utf8;
+
 create table contest
 (
     contest_id   int auto_increment
@@ -8,7 +9,7 @@ create table contest
     contest_name varchar(64)   null,
     start_at     timestamp     not null comment '开始时间',
     end_at       timestamp     not null comment '结束时间',
-    languages    int default 0 not null comment '支持的语言范围'
+    languages int default 0 not null comment '支持的语言范围，掩码表示法'
 );
 
 create table problem
@@ -54,11 +55,11 @@ create table user
 (
     user_id   varchar(32)                         not null
         primary key,
-    name      varchar(16)                         not null comment '用户名',
+    name      varchar(16)                         not null,
     password  varchar(100)                        not null,
-    secret    char(8)                             not null comment '秘钥',
+    secret    char(8)                             not null comment '秘钥，用于生成 jwt',
     email     varchar(32)                         null,
-    section   varchar(16)                         null comment '班级',
+    section   varchar(16)                         null,
     role_id   int       default 0                 not null,
     create_at timestamp default CURRENT_TIMESTAMP null,
     constraint user_role_role_id_fk
@@ -68,16 +69,16 @@ create table user
 
 create table solution
 (
-    solution_id char(36)
+    solution_id char(36)                                                                                                     not null
         primary key,
-    problem_id  int                                null,
-    contest_id  int                                null,
-    language    int                                not null,
-    state       int      default 2                 not null comment '状态(2->已提交,1->在判题队列,0->已判题)',
-    result      int                                null comment '结果(4->编译错误,3->答案错误,2->部分通过,1->时间超限,0->完全正确)',
-    pass_rate   double   default 0                 not null comment '通过率',
-    user_id     varchar(32)                        null,
-    submit_time datetime default CURRENT_TIMESTAMP not null comment '提交时间',
+    problem_id  int                                                                                                          null,
+    contest_id  int                                                                                                          null,
+    language    int                                                                                                          not null,
+    state       enum ('JUDGED', 'IN_JUDGED_QUEUE', 'ACCEPTED') default 'ACCEPTED'                                            not null,
+    result      enum ('PASSED', 'TIMEOUT', 'OOM', 'PARTLY_PASSED', 'WRONG', 'COMPILE_ERROR', 'RUNTIME_ERROR', 'JUDGE_ERROR') null,
+    pass_rate   double                                         default 0                                                     not null,
+    user_id     varchar(32)                                                                                                  null,
+    submit_time datetime                                       default CURRENT_TIMESTAMP                                     not null,
     constraint solution_contest_contest_id_fk
         foreign key (contest_id) references contest (contest_id)
             on update cascade,
@@ -95,7 +96,7 @@ create table compile
         primary key,
     solution_id char(36) not null,
     state       int      not null comment '编译状态(0->编译成功,-1->编译出错)',
-    info        text     null comment '编译信息',
+    info        text     null,
     constraint compile_solution_solution_id_fk
         foreign key (solution_id) references solution (solution_id)
             on update cascade on delete cascade
@@ -108,9 +109,9 @@ create table runtime
     solution_id char(36) not null,
     total       int      null comment '总测试点数量',
     passed      int      null comment '通过的测试点数量',
-    time        bigint   null comment '耗时（ms）',
+    time        bigint   null comment '耗时(ms)',
+    memory      bigint   null comment '内存占用(KB)',
     info        text     null,
-    output      text     null comment '输出',
     constraint runtime_solution_solution_id_fk
         foreign key (solution_id) references solution (solution_id)
             on update cascade on delete cascade
@@ -125,13 +126,6 @@ create table source_code
     constraint source_code_solution_solution_id_fk
         foreign key (solution_id) references solution (solution_id)
             on update cascade on delete cascade
-);
-
-create table task
-(
-    task_name char(32) not null
-        primary key,
-    uuid      char(36) null
 );
 
 create index user_name_index
@@ -193,7 +187,7 @@ from ((select `problem_score`.`user_id`        AS `user_id`,
                     max((`s`.`pass_rate` * `p`.`score`)) AS `score`,
                     `s`.`contest_id`                     AS `contest_id`,
                     `c`.`contest_name`                   AS `contest_name`
-             from (((`cloud_oj`.`solution` `s` join `cloud_oj`.`user` `u` on ((`s`.`user_id` = `u`.`user_id`)))
+             from (((`cloud_oj`.`solution` `s` join `cloud_oj`.`user` `u` on ((`s`.`user_id` = `u`.`user_id`) and (`u`.`role_id` = 0)))
                  join `cloud_oj`.`problem` `p` on ((`s`.`problem_id` = `p`.`problem_id`)))
                       join `cloud_oj`.`contest` `c` on ((`s`.`contest_id` = `c`.`contest_id`)))
              group by `s`.`user_id`, `u`.`name`, `p`.`problem_id`, `s`.`contest_id`, `c`.`contest_name`) `problem_score`
@@ -218,9 +212,8 @@ select `s`.`solution_id`                         AS `solution_id`,
        `s`.`submit_time`                         AS `submit_time`,
        round((`s`.`pass_rate` * `p`.`score`), 1) AS `score`,
        `sc`.`code`                               AS `code`,
-       `c`.`state`                               AS `compile_state`,
-       `c`.`info`                                AS `compile_info`,
-       `r`.`time`                                AS `time`
+       `r`.`time`                                AS `time`,
+       `r`.memory                                AS `memory`
 from ((((`cloud_oj`.`solution` `s` join `cloud_oj`.`problem` `p` on ((`s`.`problem_id` = `p`.`problem_id`))) join `cloud_oj`.`compile` `c` on ((`s`.`solution_id` = `c`.`solution_id`))) left join `cloud_oj`.`runtime` `r` on ((`s`.`solution_id` = `r`.`solution_id`)))
          join `cloud_oj`.`source_code` `sc` on ((`s`.`solution_id` = `sc`.`solution_id`)))
 order by `s`.`submit_time`;
@@ -239,7 +232,7 @@ from ((select `problem_score`.`user_id`        AS `user_id`,
                     `u`.`name`                           AS `name`,
                     count(`p`.`problem_id`)              AS `committed`,
                     max((`s`.`pass_rate` * `p`.`score`)) AS `score`
-             from ((`cloud_oj`.`solution` `s` join `cloud_oj`.`user` `u` on ((`s`.`user_id` = `u`.`user_id`)))
+             from ((`cloud_oj`.`solution` `s` join `cloud_oj`.`user` `u` on ((`s`.`user_id` = `u`.`user_id`) and (`u`.`role_id` = 0)))
                       join `cloud_oj`.`problem` `p` on ((`s`.`problem_id` = `p`.`problem_id`)))
              where contest_id is null
              group by `s`.`user_id`, `u`.`name`, `p`.`problem_id`) `problem_score`
@@ -266,5 +259,5 @@ set character set utf8;
 INSERT INTO cloud_oj.user (user_id, name, password, secret, role_id)
 VALUES ('root', '初始管理员', '$2a$10$79exZxOfiSAtHcyCXSfjMeH5GYgMwUhexc.3ZXqbuxLaHVhp05LTi', LEFT(UUID(), 8), 3);
 
-INSERT INTO task (task_name)
-VALUES ('send_committed');
+ALTER TABLE problem
+    AUTO_INCREMENT = 1000
