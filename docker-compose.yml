@@ -109,7 +109,7 @@ services:
     volumes:
       - "./mysql/config:/etc/mysql/conf.d"
       - "./mysql/sql:/docker-entrypoint-initdb.d"
-      - "mysql:/var/lib/mysql"    # 数据目录
+      - "mysql:/var/lib/mysql"
     environment:
       MYSQL_ROOT_PASSWORD: "cloud"
       MYSQL_ROOT_HOST: "%"
