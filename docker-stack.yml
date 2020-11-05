@@ -57,7 +57,7 @@ services:
       - "log:/app/log"
     environment:
       EUREKA_SERVER: "eureka:8761"
-      MYSQL_URL: "jdbc:mysql://mysql:3306/cloud_oj"
+      MYSQL_URL: "jdbc:mysql://mysql:3306/cloud_oj?serverTimezone=Asia/Shanghai"
       MYSQL_USER: "root"
       MYSQL_PASSWORD: "cloud"
       DB_POOL_SIZE: 12
@@ -98,7 +98,7 @@ services:
       - "log:/app/log"
     environment:
       EUREKA_SERVER: "eureka:8761"
-      MYSQL_URL: "jdbc:mysql://mysql:3306/cloud_oj?allowMultiQueries=true"
+      MYSQL_URL: "jdbc:mysql://mysql:3306/cloud_oj?allowMultiQueries=true?serverTimezone=Asia/Shanghai"
       MYSQL_USER: "root"
       MYSQL_PASSWORD: "cloud"
       DB_POOL_SIZE: 12
@@ -143,7 +143,7 @@ services:
     environment:
       RUNNER_IMAGE: "registry.cn-hangzhou.aliyuncs.com/cloud_oj/runner:latest"
       EUREKA_SERVER: "eureka:8761"
-      MYSQL_URL: "jdbc:mysql://mysql:3306/cloud_oj"
+      MYSQL_URL: "jdbc:mysql://mysql:3306/cloud_oj?serverTimezone=Asia/Shanghai"
       MYSQL_USER: "root"
       MYSQL_PASSWORD: "cloud"
       DB_POOL_SIZE: 12
@@ -174,6 +174,7 @@ services:
     volumes:
       - "mysql:/var/lib/mysql"    # 数据目录
     environment:
+      TZ: "Asia/Shanghai"
       MYSQL_ROOT_PASSWORD: "cloud"
       MYSQL_ROOT_HOST: "%"
 
