@@ -7,7 +7,6 @@ Cloud OJ 部署脚本（仅支持 Docker）
 ## 目录结构
 
 ```bash
-│  cloud-oj.cmd         # Windows 部署脚本，一般用不上
 │  cloud-oj.sh          # Linux 部署脚本
 │  docker-compose.yml   # 单机部署的编排文件
 │  docker-stack.yml     # 集群部署的编排文件
@@ -22,15 +21,35 @@ Cloud OJ 部署脚本（仅支持 Docker）
            init_cloud_oj.sql   # 数据库初始化脚本
 ```
 
-> 如果你非常熟悉 Docker、Docker Swarm，可以忽略部署脚本。
-
-## 部署方法
+## 部署
 
 此部署脚本基于 Docker、Docker Swarm 部署，请先安装并配置好 Docker。
 
-设置环境变量：
+为了避免出现问题，请确保：
 
-- 编排文件中的连接池和线程池根据 CPU 核心数配置。
+- 使用最新版的 [docker-compose](https://github.com/docker/compose/releases/)
+- 使用 `18.06.0+` 版本的 Docker Engine
+
+### 设置环境变量
+
+| Environment Name    | 说明
+| :------------------ | :------------------------------
+| EUREKA_SERVER       | 注册中心，填写注册中心的服务名
+| MYSQL_URL           | 数据库的 URL
+| MYSQL_USER          | 用于连接数据库的用户
+| MYSQL_ROOT_PASSWORD | MySQL root 用户的密码
+| MYSQL_PASSWORD      | 数据库的密码
+| DB_POOL_SIZE        | 数据库连接池大小
+| RABBIT_URL          | RabbitMQ 的 IP
+| RABBIT_PORT         | RabbitMQ 的 端口
+| RABBIT_USER         | RabbitMQ 的用户名
+| RABBIT_PASSWORD     | RabbitMQ 的密码
+| CORE_POOL_SIZE      | 判题线程池基本大小
+| MAX_POOL_SIZE       | 判题线程池最大值
+| QUEUE_CAPACITY      | 判题线程池队列大小
+| TOKEN_VALID_TIME    | JWT Token 有效时间（单位：小时）
+
+> 编排文件中的连接池和线程池可根据 CPU 核心数配置
 
 ### 1. 单机部署
 
@@ -53,15 +72,6 @@ volumes:
 ### 2. 集群模式
 
 搭建 Docker Swarm 集群，集群模式需要使用 NFS 存储测试数据，将宿主机的 `/var/lib/cloud_oj` 目录挂载到你的 NFS 服务器即可。
-
-若挂载的 NFS 目录无法写入文件，请设置容器的 `uid` 与宿主机一致：
-
-```yaml
-file_server:
-  user: "1000"   # 指定 uid
-```
-
-如果你使用 root 用户运行的 Docker，也许可以不用设置 `uid`，如果不是，请先使用 `id <用户名>` 命令查看 `uid`，然后将 `docker-stack.yml` 中的 `user` 部分替换
 
 #### 设置服务的节点
 
@@ -86,9 +96,11 @@ deploy:
 
 > OJ 初始管理员用户名和密码均为 `root`
 
+> 也可以使用其他方式进行分布式部署，只要服务能正常注册就行。
+
 ### 配置 HTTPS（可选）
 
-> 提示：如果不需要使用 HTTPS，请忽略这部分。
+**如果不需要使用 HTTPS，请忽略这部分**
 
 #### 单机部署的配置方法
 
@@ -139,26 +151,6 @@ web:
     SSL_CERT: "example.pem"
     SSL_KEY: "example.key"
 ```
-
-> 提示：如果你使用的是 Docker Desktop for Windows，那么配置 HTTPS 后可能会出现 403 的情况。
-
-## 环境变量
-
-| Environment Name    | 说明
-| ------------------- | -------------------------------
-| EUREKA_SERVER       | 注册中心，填写注册中心的服务名
-| MYSQL_URL           | 数据库的 URL
-| MYSQL_USER          | 用于连接数据库的用户
-| MYSQL_ROOT_PASSWORD | MySQL root 用户的密码
-| MYSQL_PASSWORD      | 数据库的密码
-| DB_POOL_SIZE        | 数据库连接池大小
-| RABBIT_URL          | RabbitMQ 的 IP
-| RABBIT_PORT         | RabbitMQ 的 端口
-| RABBIT_USER         | RabbitMQ 的用户名
-| RABBIT_PASSWORD     | RabbitMQ 的密码
-| CORE_POOL_SIZE      | 判题线程池基本大小
-| MAX_POOL_SIZE       | 判题线程池最大值
-| QUEUE_CAPACITY      | 判题线程池队列大小
 
 ## 数据卷
 

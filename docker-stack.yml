@@ -1,4 +1,4 @@
-version: "3.4"
+version: "3.7"
 
 services:
   # 注册中心
@@ -7,7 +7,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 1024M
+          memory: 256M
       placement:
         constraints:
           - node.role == manager
@@ -26,7 +26,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 512M
+          memory: 256M
       placement:
         constraints:
           - node.role == manager
@@ -61,6 +61,7 @@ services:
       MYSQL_USER: "root"
       MYSQL_PASSWORD: "cloud"
       DB_POOL_SIZE: 12
+      TOKEN_VALID_TIME: 4
 
   # Web
   web:
@@ -69,7 +70,7 @@ services:
       replicas: 2
       resources:
         limits:
-          memory: 1024M
+          memory: 256M
       placement:
         constraints:
           - node.role == worker
@@ -141,7 +142,6 @@ services:
       - "/tmp/code:/tmp/code"
       - "log:/app/log"
     environment:
-      RUNNER_IMAGE: "registry.cn-hangzhou.aliyuncs.com/cloud_oj/runner:latest"
       EUREKA_SERVER: "eureka:8761"
       MYSQL_URL: "jdbc:mysql://mysql:3306/cloud_oj?serverTimezone=Asia/Shanghai"
       MYSQL_USER: "root"
@@ -157,7 +157,7 @@ services:
 
   # 数据库
   mysql:
-    image: mysql:8.0.18
+    image: mysql:8.0
     deploy:
       placement:
         constraints:

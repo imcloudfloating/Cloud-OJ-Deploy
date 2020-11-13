@@ -1,9 +1,13 @@
-version: "3.4"
+version: "3.7"
 
 services:
   # 注册中心
   eureka:
     image: registry.cn-hangzhou.aliyuncs.com/cloud_oj/register-center:latest
+    deploy:
+      resources:
+        limits:
+          memory: 256M
     networks:
       - oj-net
     ports:
@@ -14,6 +18,10 @@ services:
   # 服务监控
   monitor_service:
     image: registry.cn-hangzhou.aliyuncs.com/cloud_oj/monitor-service:latest
+    deploy:
+      resources:
+        limits:
+          memory: 256M
     networks:
       - oj-net
     ports:
@@ -26,6 +34,10 @@ services:
   # 路由网关
   gateway:
     image: registry.cn-hangzhou.aliyuncs.com/cloud_oj/api-gateway:latest
+    deploy:
+      resources:
+        limits:
+          memory: 1024M
     networks:
       - oj-net
     volumes:
@@ -36,10 +48,15 @@ services:
       MYSQL_USER: "root"
       MYSQL_PASSWORD: "cloud"
       DB_POOL_SIZE: 12
+      TOKEN_VALID_TIME: 4
 
   # Web
   web:
     image: registry.cn-hangzhou.aliyuncs.com/cloud_oj/web:latest
+    deploy:
+      resources:
+        limits:
+          memory: 256M
     networks:
       - oj-net
     ports: 
@@ -50,6 +67,10 @@ services:
   # 管理服务
   manager_service:
     image: registry.cn-hangzhou.aliyuncs.com/cloud_oj/manager-service:latest
+    deploy:
+      resources:
+        limits:
+          memory: 2048M
     networks:
       - oj-net
     volumes:
@@ -65,6 +86,10 @@ services:
   # 文件服务
   file_server:
     image: registry.cn-hangzhou.aliyuncs.com/cloud_oj/file-server:latest
+    deploy:
+      resources:
+        limits:
+          memory: 512M
     networks:
       - oj-net
     volumes:
@@ -76,6 +101,10 @@ services:
   # 判题服务
   judge_service:
     image: registry.cn-hangzhou.aliyuncs.com/cloud_oj/judge-service:latest
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
     networks:
       - oj-net
     volumes:
@@ -85,7 +114,6 @@ services:
       - "/tmp/code:/tmp/code"
       - "log:/app/log"
     environment:
-      RUNNER_IMAGE: "registry.cn-hangzhou.aliyuncs.com/cloud_oj/runner:latest"
       EUREKA_SERVER: "eureka:8761"
       MYSQL_URL: "jdbc:mysql://mysql:3306/cloud_oj?serverTimezone=Asia/Shanghai"
       MYSQL_USER: "root"
@@ -101,7 +129,7 @@ services:
 
   # 数据库
   mysql:
-    image: mysql:8.0.18
+    image: mysql:8.0
     networks:
       - oj-net
     ports:
