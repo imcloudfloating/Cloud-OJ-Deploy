@@ -34,6 +34,7 @@ Cloud OJ 部署脚本（仅支持 Docker）
 
 | Environment Name    | 说明
 | :------------------ | :------------------------------
+| JAVA_OPTS           | JVM 参数
 | EUREKA_SERVER       | 注册中心，填写注册中心的服务名
 | MYSQL_URL           | 数据库的 URL
 | MYSQL_USER          | 用于连接数据库的用户
@@ -152,10 +153,16 @@ web:
     SSL_KEY: "example.key"
 ```
 
-## 数据卷
+## 容器端口
 
-| Volume    | 说明
-| --------- | ----------------------------------
-| mysql     | MySQL 数据
-| rabbit    | RabbitMQ 数据
-| log       | 存放服务的日志文件
+| Service         | Port
+| :---------------| :------------
+| eureka          | 8761
+| gateway         | 80
+| monitor         | 5000
+| file_server     | 8000
+| manager_service | 8001
+| judge_service   | 8002
+| web             | 80
+| mysql           | 3306
+| rabbitmq        | 5762, 15672
