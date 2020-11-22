@@ -2,26 +2,18 @@ version: "3.7"
 
 services:
   # 注册中心
-  eureka:
-    image: registry.cn-hangzhou.aliyuncs.com/cloud_oj/register-center:latest
-    deploy:
-      resources:
-        limits:
-          memory: 768M
+  registry:
+    image: registry.cn-hangzhou.aliyuncs.com/cloud_oj/registry:latest
     networks:
       - oj-net
     volumes:
       - "log:/app/log"
     environment: 
-      JAVA_OPTS: "-Xms512m -Xmx512m"
+      JAVA_OPTS: "-Xms64m -Xmx64m"
 
   # 服务监控
   monitor:
-    image: registry.cn-hangzhou.aliyuncs.com/cloud_oj/monitor-service:latest
-    deploy:
-      resources:
-        limits:
-          memory: 512M
+    image: registry.cn-hangzhou.aliyuncs.com/cloud_oj/monitor:latest
     networks:
       - oj-net
     ports:
@@ -29,72 +21,56 @@ services:
     volumes:
       - "log:/app/log"
     environment:
-      JAVA_OPTS: "-Xms256m -Xmx256m"
-      EUREKA_SERVER: "eureka:8761"
+      JAVA_OPTS: "-Xms64m -Xmx64m"
+      EUREKA_SERVER: "registry:8761"
 
   # 路由网关
   gateway:
-    image: registry.cn-hangzhou.aliyuncs.com/cloud_oj/api-gateway:latest
-    deploy:
-      resources:
-        limits:
-          memory: 1024M
+    image: registry.cn-hangzhou.aliyuncs.com/cloud_oj/gateway:latest
     networks:
       - oj-net
     volumes:
       - "log:/app/log"
     environment:
-      JAVA_OPTS: "-Xms768m -Xmx768m"
-      EUREKA_SERVER: "eureka:8761"
+      JAVA_OPTS: "-Xms256m -Xmx256m"
+      EUREKA_SERVER: "registry:8761"
       MYSQL_URL: "jdbc:mysql://mysql:3306/cloud_oj?serverTimezone=Asia/Shanghai"
       MYSQL_USER: "root"
       MYSQL_PASSWORD: "cloud"
-      DB_POOL_SIZE: 12
+      DB_POOL_SIZE: 8
       TOKEN_VALID_TIME: 4
 
   # 管理服务
   manager_service:
     image: registry.cn-hangzhou.aliyuncs.com/cloud_oj/manager-service:latest
-    deploy:
-      resources:
-        limits:
-          memory: 2048M
     networks:
       - oj-net
     volumes:
       - "log:/app/log"
       - "/var/lib/cloud_oj:/var/lib/cloud_oj"
     environment:
-      JAVA_OPTS: "-Xms1533m -Xmx1533m"
-      EUREKA_SERVER: "eureka:8761"
+      JAVA_OPTS: "-Xms512m -Xmx512m"
+      EUREKA_SERVER: "registry:8761"
       MYSQL_URL: "jdbc:mysql://mysql:3306/cloud_oj?allowMultiQueries=true&serverTimezone=Asia/Shanghai"
       MYSQL_USER: "root"
       MYSQL_PASSWORD: "cloud"
-      DB_POOL_SIZE: 12
+      DB_POOL_SIZE: 8
 
   # 文件服务
-  file_server:
-    image: registry.cn-hangzhou.aliyuncs.com/cloud_oj/file-server:latest
-    deploy:
-      resources:
-        limits:
-          memory: 512M
+  file_service:
+    image: registry.cn-hangzhou.aliyuncs.com/cloud_oj/file-service:latest
     networks:
       - oj-net
     volumes:
       - "/var/lib/cloud_oj:/var/lib/cloud_oj"
       - "log:/app/log"
     environment:
-      JAVA_OPTS: "-Xms256m -Xmx256m"
-      EUREKA_SERVER: "eureka:8761"
+      JAVA_OPTS: "-Xms64m -Xmx64m"
+      EUREKA_SERVER: "registry:8761"
 
   # 判题服务
   judge_service:
     image: registry.cn-hangzhou.aliyuncs.com/cloud_oj/judge-service:latest
-    deploy:
-      resources:
-        limits:
-          memory: 4096M
     networks:
       - oj-net
     volumes:
@@ -104,27 +80,23 @@ services:
       - "/tmp/code:/tmp/code"
       - "log:/app/log"
     environment:
-      JAVA_OPTS: "-Xms2048m -Xmx2048m"
-      EUREKA_SERVER: "eureka:8761"
+      JAVA_OPTS: "-Xms512m -Xmx512m"
+      EUREKA_SERVER: "registry:8761"
       MYSQL_URL: "jdbc:mysql://mysql:3306/cloud_oj?serverTimezone=Asia/Shanghai"
       MYSQL_USER: "root"
       MYSQL_PASSWORD: "cloud"
-      DB_POOL_SIZE: 12
+      DB_POOL_SIZE: 8
       RABBIT_URL: "rabbitmq"
       RABBIT_PORT: "5672"
       RABBIT_USER: "cloud@oj"
       RABBIT_PASSWORD: "cloud@oj"
       CORE_POOL_SIZE: 8
-      MAX_POOL_SIZE: 16
+      MAX_POOL_SIZE: 8
       QUEUE_CAPACITY: 200
 
   # 前端
   web:
     image: registry.cn-hangzhou.aliyuncs.com/cloud_oj/web:latest
-    deploy:
-      resources:
-        limits:
-          memory: 256M
     networks:
       - oj-net
     ports: 

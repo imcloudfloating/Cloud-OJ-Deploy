@@ -1,4 +1,4 @@
-# Linux Deploy Script
+#!/bin/bash
 if [ "$1" == "--deploy" ]; then
     echo "Deploying on Docker Swarm..."
     # 在Swarm模式下部署
