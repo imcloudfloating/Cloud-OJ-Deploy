@@ -49,7 +49,7 @@ services:
       - "log:/app/log"
       - "/var/lib/cloud_oj:/var/lib/cloud_oj"
     environment:
-      JAVA_OPTS: "-Xms512m -Xmx512m"
+      JAVA_OPTS: "-Xms256m -Xmx256m"
       EUREKA_SERVER: "registry:8761"
       MYSQL_URL: "jdbc:mysql://mysql:3306/cloud_oj?allowMultiQueries=true&serverTimezone=Asia/Shanghai"
       MYSQL_USER: "root"
@@ -80,7 +80,7 @@ services:
       - "/tmp/code:/tmp/code"
       - "log:/app/log"
     environment:
-      JAVA_OPTS: "-Xms512m -Xmx512m"
+      JAVA_OPTS: "-Xms256m -Xmx256m"
       EUREKA_SERVER: "registry:8761"
       MYSQL_URL: "jdbc:mysql://mysql:3306/cloud_oj?serverTimezone=Asia/Shanghai"
       MYSQL_USER: "root"
