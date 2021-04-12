@@ -40,9 +40,9 @@ services:
       DB_POOL_SIZE: 8
       TOKEN_VALID_TIME: 4
 
-  # 管理服务
-  manager_service:
-    image: registry.cn-hangzhou.aliyuncs.com/cloud_oj/manager-service:latest
+  # 主服务
+  core_service:
+    image: registry.cn-hangzhou.aliyuncs.com/cloud_oj/core-service:latest
     networks:
       - oj-net
     volumes:
