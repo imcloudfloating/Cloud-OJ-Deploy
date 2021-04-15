@@ -132,7 +132,7 @@ services:
     ports:
       - "80:80"
     environment:
-      API_HOST: "gateway"
+      API_HOST: "gateway:8080"
 
   # 数据库
   mysql:
