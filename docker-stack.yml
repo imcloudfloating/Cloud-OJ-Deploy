@@ -128,7 +128,6 @@ services:
       RABBIT_USER: "cloud@oj"
       RABBIT_PASSWORD: "cloud@oj"
       JUDGE_POOL_SIZE: 4
-      COMMIT_QUEUE_LENGTH: 4000   # 首次创建队列时生效
     
   # 前端
   web:
